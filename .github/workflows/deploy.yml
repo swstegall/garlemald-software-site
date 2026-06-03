@@ -1,0 +1,68 @@
+name: Deploy to GitHub Pages
+
+# Builds the static site and publishes it to GitHub Pages.
+#  - on push to main: deploy the latest code
+#  - daily cron: rebuild so baked READMEs / docs / release downloads refresh
+#  - manual: workflow_dispatch button
+on:
+  push:
+    branches: [main]
+  schedule:
+    # 07:00 UTC daily — refresh baked content from the source repos.
+    - cron: "0 7 * * *"
+  workflow_dispatch: {}
+
+# Allow the workflow to publish to Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One concurrent deploy; let an in-progress run finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  # GitHub Pages project site is served from /<repo>/.
+  NEXT_PUBLIC_BASE_PATH: /garlemald-software-site
+  NEXT_PUBLIC_SITE_URL: https://swstegall.github.io/garlemald-software-site
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static site
+        # prebuild runs scripts/fetch-content.mjs; GITHUB_TOKEN lifts the
+        # anonymous GitHub API rate limit when fetching release metadata.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
