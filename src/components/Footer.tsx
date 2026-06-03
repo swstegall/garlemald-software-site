@@ -68,7 +68,7 @@ export default function Footer() {
             <Box
               component={Link}
               href="/"
-              aria-label="Garlemald home"
+              aria-label="Garlemald Software home"
               sx={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -80,12 +80,12 @@ export default function Footer() {
             >
               <Box
                 component="img"
-                src={withBase("/brand/garlemald-icon.png")}
-                alt="Garlemald"
+                src={withBase("/brand/garlemald-emblem.png")}
+                alt="Garlemald Software"
                 sx={{ height: 30, width: "auto" }}
               />
               <Typography sx={{ fontWeight: 800, fontSize: "1.15rem" }}>
-                Garlemald
+                Garlemald Software
               </Typography>
             </Box>
             <Typography

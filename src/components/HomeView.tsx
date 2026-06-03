@@ -186,12 +186,12 @@ function Hero() {
               />
               <Box
                 component="img"
-                src={withBase("/brand/garlemald-icon.png")}
-                alt="Garlemald — a winged emerald-green G"
+                src={withBase("/brand/garlemald-emblem.png")}
+                alt="Garlemald Software — a winged emerald-green G"
                 sx={{
                   position: "relative",
                   width: "100%",
-                  maxWidth: 380,
+                  maxWidth: 340,
                   height: "auto",
                   filter: "drop-shadow(0 12px 40px rgba(0,0,0,0.55))",
                 }}

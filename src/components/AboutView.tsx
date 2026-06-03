@@ -81,12 +81,11 @@ export default function AboutView() {
       >
         <Box
           component="img"
-          src={withBase("/brand/garlemald-icon.png")}
-          alt="Garlemald project icon"
+          src={withBase("/brand/garlemald-emblem.png")}
+          alt="Garlemald Software icon"
           sx={{
-            width: 72,
-            height: 72,
-            borderRadius: 2,
+            height: 104,
+            width: "auto",
             flexShrink: 0,
             filter: "drop-shadow(0 6px 20px rgba(63,185,80,0.25))",
           }}
@@ -148,9 +147,14 @@ export default function AboutView() {
           binaries still exist on collectors&apos; disks, but a client is useless
           without a server to talk to — and Square Enix&apos;s servers are gone
           forever. The{" "}
-          <Box component="span" sx={{ color: "text.primary", fontWeight: 600 }}>
+          <MuiLink
+            href="http://ffxivclassic.fragmenterworks.com/wiki/index.php/Main_Page"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ color: "primary.main", fontWeight: 600 }}
+          >
             Project Meteor Server
-          </Box>{" "}
+          </MuiLink>{" "}
           (formerly Seventh Umbral) is the landmark community effort that
           re-implements the 1.x server from scratch, reverse-engineering the wire
           protocol packet by packet so the original client can once again log in
@@ -277,23 +281,38 @@ export default function AboutView() {
           {[
             {
               name: "Project Meteor Server",
+              href: "http://ffxivclassic.fragmenterworks.com/wiki/index.php/Main_Page",
               note: "the community 1.x server re-implementation this work ports from and is validated against.",
             },
             {
               name: "Seventh Umbral",
+              href: "https://github.com/Meteor-Project/SeventhUmbral",
               note: "the original launcher and server lineage that Project Meteor and these tools grew out of.",
             },
             {
               name: "LandSandBoat",
+              href: "https://github.com/LandSandBoat/server",
               note: "the FINAL FANTASY XI private server, referenced for the XI-inherited combat and systems math.",
             },
           ].map((item) => (
             <ListItem key={item.name} disableGutters sx={{ alignItems: "flex-start" }}>
               <ListItemText
-                primary={item.name}
+                primary={
+                  <MuiLink
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      color: "text.primary",
+                      fontWeight: 600,
+                      "&:hover": { color: "primary.main" },
+                    }}
+                  >
+                    {item.name}
+                  </MuiLink>
+                }
                 secondary={item.note}
                 slotProps={{
-                  primary: { sx: { color: "text.primary", fontWeight: 600 } },
                   secondary: { sx: { color: "text.secondary", lineHeight: 1.6 } },
                 }}
               />

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -9,6 +10,11 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import { blobUrl, rawUrl } from "@/lib/github";
 import CopyButton from "./CopyButton";
+
+/** True for a same-site root-relative path like "/downloads/" (not "//cdn"). */
+function isInternalPath(url: string): boolean {
+  return url.startsWith("/") && !url.startsWith("//");
+}
 
 export interface MarkdownLinkBase {
   owner: string;
@@ -107,6 +113,15 @@ export default function Markdown({ markdown, linkBase }: MarkdownProps) {
 
       a: ({ href, children, node: _node, ...rest }) => {
         const resolved = resolveHref(href, linkBase);
+        // Same-site links must go through next/link so the GitHub Pages
+        // basePath is prepended — a plain <a href="/start/"> 404s in prod.
+        if (typeof resolved === "string" && isInternalPath(resolved)) {
+          return (
+            <Link href={resolved} {...rest}>
+              {children}
+            </Link>
+          );
+        }
         const external =
           typeof resolved === "string" && /^https?:\/\//i.test(resolved);
         return (

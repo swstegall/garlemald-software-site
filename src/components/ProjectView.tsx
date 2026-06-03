@@ -41,9 +41,9 @@ import { getQuickStart } from "@/content/quickstart";
 
 import Markdown from "@/components/Markdown";
 import BranchToggle from "@/components/BranchToggle";
-import DiscordButton from "@/components/DiscordButton";
 import QuickStartGuide from "@/components/QuickStartGuide";
 import ReleaseDownloads from "@/components/ReleaseDownloads";
+import DecompProgress from "@/components/DecompProgress";
 
 const ICON_MAP: Record<string, IconComponent> = {
   dns: DnsIcon,
@@ -232,7 +232,6 @@ export default function ProjectView({ slug }: ProjectViewProps) {
             >
               Issues
             </Button>
-            <DiscordButton variant="outlined" size="small" />
           </Stack>
         </Container>
       </Box>
@@ -270,6 +269,11 @@ export default function ProjectView({ slug }: ProjectViewProps) {
         {/* OVERVIEW ---------------------------------------------------------- */}
         {section === "overview" && (
           <Box>
+            {slug === "meteor-decomp" && (
+              <Box sx={{ mb: 4 }}>
+                <DecompProgress />
+              </Box>
+            )}
             {project.branches.length > 1 && (
               <Stack
                 direction="row"

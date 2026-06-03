@@ -51,7 +51,7 @@ export default function DocView({ slug, docSlug }: DocViewProps) {
   // Friendly not-found state.
   if (!doc) {
     return (
-      <Container maxWidth="md" sx={{ py: { xs: 6, md: 10 } }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Document not found
         </Typography>
@@ -75,7 +75,7 @@ export default function DocView({ slug, docSlug }: DocViewProps) {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
       <Breadcrumbs aria-label="Breadcrumb" sx={{ mb: 3 }}>
         <MuiLink
           component={Link}

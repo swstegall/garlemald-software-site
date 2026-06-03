@@ -63,7 +63,7 @@ export default function Header() {
     <Box
       component={Link}
       href="/"
-      aria-label="Garlemald home"
+      aria-label="Garlemald Software home"
       sx={{
         display: "inline-flex",
         alignItems: "center",
@@ -74,7 +74,7 @@ export default function Header() {
     >
       <Box
         component="img"
-        src={withBase("/brand/garlemald-icon.png")}
+        src={withBase("/brand/garlemald-emblem.png")}
         alt="Garlemald"
         sx={{ height: 30, width: "auto", display: "block" }}
       />
@@ -82,7 +82,7 @@ export default function Header() {
         component="span"
         sx={{ fontWeight: 800, fontSize: "1.15rem", letterSpacing: "-0.01em" }}
       >
-        Garlemald
+        Garlemald Software
       </Typography>
     </Box>
   );
@@ -224,11 +224,11 @@ export default function Header() {
         >
           <Box
             component="img"
-            src={withBase("/brand/garlemald-icon.png")}
+            src={withBase("/brand/garlemald-emblem.png")}
             alt=""
             sx={{ height: 26, width: "auto" }}
           />
-          <Typography sx={{ fontWeight: 800 }}>Garlemald</Typography>
+          <Typography sx={{ fontWeight: 800 }}>Garlemald Software</Typography>
         </Box>
         <Divider />
         <List>

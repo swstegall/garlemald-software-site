@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
-import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -10,29 +10,21 @@ import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import type { QuickStart, QuickStartStep } from "@/content/quickstart";
 import type { Platform } from "@/lib/types";
-import { ALL_PLATFORMS } from "@/lib/platform";
+import { usePlatform } from "@/lib/platform";
 import Markdown from "@/components/Markdown";
 import CopyButton from "@/components/CopyButton";
 
 /** Heuristic: does this string carry markdown worth rendering through Markdown? */
 function looksLikeMarkdown(text: string): boolean {
   return /[*_`[\]#]|https?:\/\//.test(text);
-}
-
-function PlatformChips({ platforms }: { platforms: Platform[] }) {
-  return (
-    <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 1 }}>
-      {platforms.map((p) => (
-        <Chip key={p} label={p} size="small" variant="outlined" />
-      ))}
-    </Stack>
-  );
 }
 
 function CodeBlock({ code, lang }: { code: string; lang?: string }) {
@@ -46,12 +38,7 @@ function CodeBlock({ code, lang }: { code: string; lang?: string }) {
         bgcolor: "background.default",
       }}
     >
-      <CopyButton
-        text={code}
-        size="small"
-        ariaLabel="Copy command"
-        tooltip="Copy"
-      />
+      <CopyButton text={code} size="small" ariaLabel="Copy command" tooltip="Copy" />
       <Box
         component="pre"
         aria-label={lang ? `${lang} code` : "code"}
@@ -60,8 +47,7 @@ function CodeBlock({ code, lang }: { code: string; lang?: string }) {
           p: 2,
           pr: 6,
           overflowX: "auto",
-          fontFamily:
-            "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+          fontFamily: "var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
           fontSize: "0.85rem",
           lineHeight: 1.65,
           color: "text.primary",
@@ -113,13 +99,7 @@ function StepCard({
         </Box>
         <Box
           aria-hidden
-          sx={{
-            flexGrow: 1,
-            width: "2px",
-            mt: 1,
-            bgcolor: "divider",
-            minHeight: 8,
-          }}
+          sx={{ flexGrow: 1, width: "2px", mt: 1, bgcolor: "divider", minHeight: 8 }}
         />
       </Box>
 
@@ -132,12 +112,6 @@ function StepCard({
         >
           {step.title}
         </Typography>
-
-        {step.platforms && step.platforms.length > 0 && (
-          <Box sx={{ mb: 1.5 }}>
-            <PlatformChips platforms={step.platforms} />
-          </Box>
-        )}
 
         {step.body &&
           (looksLikeMarkdown(step.body) ? (
@@ -166,9 +140,27 @@ export default function QuickStartGuide({
   guide: QuickStart;
   accent?: string;
 }) {
-  const notes = guide.platformNotes
-    ? ALL_PLATFORMS.filter((p) => guide.platformNotes?.[p])
-    : [];
+  // The segmented control offers the project's supported OSes; default to the
+  // visitor's OS when supported, else the first listed platform.
+  const platforms = guide.platforms?.length ? guide.platforms : [];
+  const { os, ready } = usePlatform();
+  const [selected, setSelected] = useState<Platform>(platforms[0]);
+
+  useEffect(() => {
+    if (ready && os && platforms.includes(os)) setSelected(os);
+  }, [ready, os, platforms]);
+
+  // Steps with no `platforms` are universal; tagged steps show only for the
+  // selected OS.
+  const visibleSteps = useMemo(
+    () =>
+      guide.steps.filter(
+        (s) => !s.platforms || s.platforms.length === 0 || s.platforms.includes(selected),
+      ),
+    [guide.steps, selected],
+  );
+
+  const selectedNote = guide.platformNotes?.[selected];
 
   return (
     <Box>
@@ -187,21 +179,11 @@ export default function QuickStartGuide({
       {guide.prerequisites.length > 0 && (
         <Paper
           variant="outlined"
-          sx={{
-            p: { xs: 2, sm: 3 },
-            mb: 5,
-            borderColor: "divider",
-            bgcolor: "background.paper",
-          }}
+          sx={{ p: { xs: 2, sm: 3 }, mb: 5, borderColor: "divider", bgcolor: "background.paper" }}
         >
           <Typography
             variant="overline"
-            sx={{
-              display: "block",
-              mb: 1,
-              color: "text.secondary",
-              letterSpacing: 1,
-            }}
+            sx={{ display: "block", mb: 1, color: "text.secondary", letterSpacing: 1 }}
           >
             Before you start
           </Typography>
@@ -209,29 +191,17 @@ export default function QuickStartGuide({
             {guide.prerequisites.map((req, i) => (
               <ListItem key={i} disableGutters alignItems="flex-start">
                 <ListItemIcon sx={{ minWidth: 32, mt: 0.5 }}>
-                  <CheckCircleOutlineIcon
-                    fontSize="small"
-                    sx={{ color: accent }}
-                  />
+                  <CheckCircleOutlineIcon fontSize="small" sx={{ color: accent }} />
                 </ListItemIcon>
                 <ListItemText
                   disableTypography
                   primary={
                     looksLikeMarkdown(req) ? (
-                      <Box
-                        sx={{
-                          color: "text.primary",
-                          fontSize: "0.875rem",
-                          "& p": { m: 0 },
-                        }}
-                      >
+                      <Box sx={{ color: "text.primary", fontSize: "0.875rem", "& p": { m: 0 } }}>
                         <Markdown markdown={req} />
                       </Box>
                     ) : (
-                      <Typography
-                        variant="body2"
-                        sx={{ color: "text.primary" }}
-                      >
+                      <Typography variant="body2" sx={{ color: "text.primary" }}>
                         {req}
                       </Typography>
                     )
@@ -243,59 +213,72 @@ export default function QuickStartGuide({
         </Paper>
       )}
 
-      {/* Steps */}
-      <Typography
-        variant="overline"
-        sx={{
-          display: "block",
-          mb: 2,
-          color: "text.secondary",
-          letterSpacing: 1,
-        }}
+      {/* Platform selector + walkthrough header */}
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={{ xs: 1.5, sm: 2 }}
+        sx={{ mb: 2.5, alignItems: { xs: "flex-start", sm: "center" }, justifyContent: "space-between" }}
       >
-        Walkthrough
-      </Typography>
+        <Typography variant="overline" sx={{ color: "text.secondary", letterSpacing: 1 }}>
+          Walkthrough
+        </Typography>
+        {platforms.length > 1 && (
+          <ToggleButtonGroup
+            exclusive
+            size="small"
+            value={selected}
+            onChange={(_e, next: Platform | null) => {
+              if (next) setSelected(next);
+            }}
+            aria-label="Choose your operating system"
+            sx={{
+              "& .MuiToggleButton-root.Mui-selected": {
+                bgcolor: `${accent}22`,
+                color: accent,
+                borderColor: `${accent}66`,
+                "&:hover": { bgcolor: `${accent}33` },
+              },
+            }}
+          >
+            {platforms.map((p) => (
+              <ToggleButton key={p} value={p} sx={{ textTransform: "none", px: 1.75 }}>
+                {p === "Linux" ? "Linux (Ubuntu)" : p}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        )}
+      </Stack>
+
+      {/* Steps for the selected platform */}
       <Box>
-        {guide.steps.map((step, i) => (
-          <StepCard key={i} index={i + 1} step={step} accent={accent} />
+        {visibleSteps.map((step, i) => (
+          <StepCard key={`${selected}-${i}`} index={i + 1} step={step} accent={accent} />
         ))}
       </Box>
 
-      {/* Platform notes */}
-      {notes.length > 0 && (
-        <>
-          <Divider sx={{ my: 3 }} />
-          <Typography
-            variant="overline"
-            sx={{
-              display: "block",
-              mb: 1.5,
-              color: "text.secondary",
-              letterSpacing: 1,
-            }}
-          >
-            Per-platform notes
+      {/* Selected-platform note */}
+      {selectedNote && (
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1.5,
+            alignItems: "flex-start",
+            p: 2,
+            mt: 1,
+            borderRadius: 2,
+            border: "1px solid",
+            borderColor: "divider",
+            bgcolor: "rgba(255,255,255,0.02)",
+          }}
+        >
+          <InfoOutlinedIcon fontSize="small" sx={{ color: accent, mt: 0.3 }} />
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
+              {selected === "Linux" ? "Linux (Ubuntu)" : selected}:
+            </Box>{" "}
+            {selectedNote}
           </Typography>
-          <Stack spacing={1.5}>
-            {notes.map((p) => (
-              <Box
-                key={p}
-                sx={{ display: "flex", gap: 1.5, alignItems: "flex-start" }}
-              >
-                <InfoOutlinedIcon
-                  fontSize="small"
-                  sx={{ color: "text.secondary", mt: 0.3 }}
-                />
-                <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
-                    {p}:
-                  </Box>{" "}
-                  {guide.platformNotes?.[p]}
-                </Typography>
-              </Box>
-            ))}
-          </Stack>
-        </>
+        </Box>
       )}
 
       {/* Next steps */}
@@ -304,12 +287,7 @@ export default function QuickStartGuide({
           <Divider sx={{ my: 3 }} />
           <Typography
             variant="overline"
-            sx={{
-              display: "block",
-              mb: 1.5,
-              color: "text.secondary",
-              letterSpacing: 1,
-            }}
+            sx={{ display: "block", mb: 1.5, color: "text.secondary", letterSpacing: 1 }}
           >
             Where to next
           </Typography>
@@ -322,13 +300,7 @@ export default function QuickStartGuide({
                 <ListItemText
                   disableTypography
                   primary={
-                    <Box
-                      sx={{
-                        color: "text.primary",
-                        fontSize: "0.875rem",
-                        "& p": { m: 0 },
-                      }}
-                    >
+                    <Box sx={{ color: "text.primary", fontSize: "0.875rem", "& p": { m: 0 } }}>
                       <Markdown markdown={item} />
                     </Box>
                   }

@@ -26,12 +26,12 @@ export default function NotFound() {
     >
       <Box
         component="img"
-        src={withBase("/brand/garlemald-icon.png")}
+        src={withBase("/brand/garlemald-emblem.png")}
         alt=""
         aria-hidden
         sx={{
-          width: 64,
-          height: 64,
+          height: 72,
+          width: "auto",
           mb: 3,
           opacity: 0.55,
           filter: "drop-shadow(0 6px 20px rgba(63,185,80,0.18))",
