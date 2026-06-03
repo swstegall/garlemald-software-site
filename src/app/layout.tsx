@@ -21,8 +21,7 @@ const mono = JetBrains_Mono({
 });
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://swstegall.github.io/garlemald-software-site";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.garlemaldsoftware.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

@@ -24,9 +24,11 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  # GitHub Pages project site is served from /<repo>/.
-  NEXT_PUBLIC_BASE_PATH: /garlemald-software-site
-  NEXT_PUBLIC_SITE_URL: https://swstegall.github.io/garlemald-software-site
+  # Served from the custom domain root (www.garlemaldsoftware.com), so there is
+  # NO basePath. (For a bare <user>.github.io/<repo>/ project site instead, set
+  # NEXT_PUBLIC_BASE_PATH: /garlemald-software-site and drop public/CNAME.)
+  NEXT_PUBLIC_BASE_PATH: ""
+  NEXT_PUBLIC_SITE_URL: https://www.garlemaldsoftware.com
 
 jobs:
   build:

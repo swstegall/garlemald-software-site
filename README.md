@@ -82,9 +82,14 @@ downloads stay fresh), and on manual `workflow_dispatch`.
 To enable it once: **Settings → Pages → Build and deployment → Source: GitHub
 Actions**.
 
-The build sets `NEXT_PUBLIC_BASE_PATH=/garlemald-software-site` because Pages
-project sites are served from a sub-path. For a custom domain or a
-`<user>.github.io` root deploy, clear that variable.
+The site is served from the custom domain **www.garlemaldsoftware.com**, which
+GitHub Pages serves at the **root** — so the build uses an **empty**
+`NEXT_PUBLIC_BASE_PATH` and ships a `public/CNAME` to pin the domain. If you
+ever drop the custom domain and serve from the bare
+`https://<user>.github.io/garlemald-software-site/` project path instead, set
+`NEXT_PUBLIC_BASE_PATH=/garlemald-software-site` in `.github/workflows/deploy.yml`
+and remove `public/CNAME` (otherwise every asset and link 404s because the
+sub-path prefix won't match the serving root).
 
 > **Note:** Publishing GitHub Pages from a **private** repository requires a
 > paid GitHub plan (Pro/Team/Enterprise). If this repo stays private on a free
