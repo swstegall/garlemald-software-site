@@ -36,7 +36,7 @@ type IconComponent = typeof ExtensionIcon;
 import { getProject } from "@/lib/projects";
 import { getProjectContentOrEmpty, fetchLiveReadme, fetchLiveMarkdown } from "@/lib/content";
 import { repoUrl, releasesUrl, issuesUrl } from "@/lib/github";
-import type { Platform } from "@/lib/types";
+import type { Platform, FetchedDoc } from "@/lib/types";
 import { getQuickStart } from "@/content/quickstart";
 
 import Markdown from "@/components/Markdown";
@@ -55,6 +55,60 @@ const ICON_MAP: Record<string, IconComponent> = {
 
 function iconFor(name: string): IconComponent {
   return ICON_MAP[name] ?? ExtensionIcon;
+}
+
+// Optional one-line intro shown under a doc-group heading. Keyed by the group
+// name authored in the registry (`ProjectDoc.group`); add an entry to describe a
+// new section. Groups without an entry simply render with no blurb.
+const DOC_GROUP_BLURBS: Record<string, string> = {
+  Contributing:
+    "Everything you need to set up the project, understand the codebase, and open your first pull request.",
+};
+
+// The ungrouped catch-all section, always rendered last.
+const DEFAULT_DOC_GROUP = "Reference";
+
+interface DocSection {
+  /** Group key, or null for the implicit single-section (no groups) case. */
+  group: string | null;
+  /** Heading to show above the grid, or null to render with no heading. */
+  heading: string | null;
+  blurb?: string;
+  docs: FetchedDoc[];
+}
+
+/**
+ * Partition a project's docs into display sections by their `group`.
+ *
+ * - No doc has a group → one headless section (renders exactly like before, so
+ *   projects without grouping are visually unchanged).
+ * - Otherwise → one section per named group in first-appearance (registry)
+ *   order, with the ungrouped "Reference" section always last.
+ */
+function buildDocSections(docs: FetchedDoc[]): DocSection[] {
+  if (!docs.some((d) => d.group)) {
+    return [{ group: null, heading: null, docs }];
+  }
+  const order: string[] = [];
+  const byGroup = new Map<string, FetchedDoc[]>();
+  for (const d of docs) {
+    const g = d.group ?? DEFAULT_DOC_GROUP;
+    if (!byGroup.has(g)) {
+      byGroup.set(g, []);
+      order.push(g);
+    }
+    byGroup.get(g)!.push(d);
+  }
+  order.sort(
+    (a, b) =>
+      (a === DEFAULT_DOC_GROUP ? 1 : 0) - (b === DEFAULT_DOC_GROUP ? 1 : 0),
+  );
+  return order.map((g) => ({
+    group: g,
+    heading: g,
+    blurb: DOC_GROUP_BLURBS[g],
+    docs: byGroup.get(g)!,
+  }));
 }
 
 type SectionKey = "overview" | "quickstart" | "downloads" | "docs";
@@ -112,7 +166,12 @@ export default function ProjectView({ slug }: ProjectViewProps) {
   const Icon = iconFor(project.icon);
 
   // Docs shown in the Docs tab — README is surfaced as the Overview instead.
-  const sidebarDocs = content.docs.filter((d) => d.path !== "README.md");
+  const sidebarDocs = useMemo(
+    () => content.docs.filter((d) => d.path !== "README.md"),
+    [content.docs],
+  );
+  // Partition into sections by `group` (e.g. "Contributing") for the Docs tab.
+  const docSections = useMemo(() => buildDocSections(sidebarDocs), [sidebarDocs]);
 
   const overviewEmpty = !readme && !readmeLoading;
 
@@ -357,47 +416,74 @@ export default function ProjectView({ slug }: ProjectViewProps) {
                 yet.
               </Typography>
             ) : (
-              <Grid container spacing={2}>
-                {sidebarDocs.map((doc) => (
-                  <Grid key={doc.docSlug} size={{ xs: 12, md: 6 }}>
-                    <Card variant="outlined" sx={{ height: "100%" }}>
-                      <CardActionArea
-                        component={Link}
-                        href={`/projects/${slug}/docs/${doc.docSlug}/`}
-                        sx={{ p: 2.5, height: "100%", alignItems: "flex-start" }}
+              <Stack spacing={4}>
+                {docSections.map((docSection) => (
+                  <Box component="section" key={docSection.group ?? "__default"}>
+                    {docSection.heading && (
+                      <Typography
+                        variant="h6"
+                        component="h3"
+                        sx={{ mb: docSection.blurb ? 0.5 : 1.5 }}
                       >
-                        <Stack
-                          direction="row"
-                          spacing={1.5}
-                          sx={{ alignItems: "flex-start" }}
-                        >
-                          <DescriptionIcon
-                            sx={{ color: project.accent, mt: 0.25 }}
-                          />
-                          <Box sx={{ minWidth: 0 }}>
-                            <Typography
-                              variant="subtitle1"
-                              sx={{ fontWeight: 700 }}
-                            >
-                              {doc.title}
-                            </Typography>
-                            <Typography
-                              variant="caption"
+                        {docSection.heading}
+                      </Typography>
+                    )}
+                    {docSection.blurb && (
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary", mb: 2 }}
+                      >
+                        {docSection.blurb}
+                      </Typography>
+                    )}
+                    <Grid container spacing={2}>
+                      {docSection.docs.map((doc) => (
+                        <Grid key={doc.docSlug} size={{ xs: 12, md: 6 }}>
+                          <Card variant="outlined" sx={{ height: "100%" }}>
+                            <CardActionArea
+                              component={Link}
+                              href={`/projects/${slug}/docs/${doc.docSlug}/`}
                               sx={{
-                                color: "text.secondary",
-                                fontFamily: "var(--font-mono)",
-                                wordBreak: "break-all",
+                                p: 2.5,
+                                height: "100%",
+                                alignItems: "flex-start",
                               }}
                             >
-                              {doc.path}
-                            </Typography>
-                          </Box>
-                        </Stack>
-                      </CardActionArea>
-                    </Card>
-                  </Grid>
+                              <Stack
+                                direction="row"
+                                spacing={1.5}
+                                sx={{ alignItems: "flex-start" }}
+                              >
+                                <DescriptionIcon
+                                  sx={{ color: project.accent, mt: 0.25 }}
+                                />
+                                <Box sx={{ minWidth: 0 }}>
+                                  <Typography
+                                    variant="subtitle1"
+                                    sx={{ fontWeight: 700 }}
+                                  >
+                                    {doc.title}
+                                  </Typography>
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      color: "text.secondary",
+                                      fontFamily: "var(--font-mono)",
+                                      wordBreak: "break-all",
+                                    }}
+                                  >
+                                    {doc.path}
+                                  </Typography>
+                                </Box>
+                              </Stack>
+                            </CardActionArea>
+                          </Card>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
                 ))}
-              </Grid>
+              </Stack>
             )}
           </Box>
         )}
