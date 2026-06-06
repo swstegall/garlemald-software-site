@@ -93,7 +93,16 @@ export const PROJECTS = [
     ],
     docs: [
       { path: "README.md", title: "Overview" },
-      { path: "docs/RELEASING.md", title: "Releasing" },
+      // Contributor onboarding set (Garlemald-Client issue #24). The `group`
+      // gathers these into a "Contributing" section on the project's Docs tab;
+      // give another project's docs the same group to add the same section there.
+      { path: "CONTRIBUTING.md", title: "Contributing guide", group: "Contributing" },
+      { path: "docs/architecture.md", title: "Architecture", group: "Contributing" },
+      { path: "docs/dev-environment.md", title: "Developer environment", group: "Contributing" },
+      { path: "docs/agents.md", title: "Working an issue with an AI agent", group: "Contributing" },
+      { path: "CLAUDE.md", title: "Agent guide (Claude)", group: "Contributing" },
+      { path: "AGENTS.md", title: "Agent guide (OpenAI Codex)", group: "Contributing" },
+      { path: "docs/RELEASING.md", title: "Releasing", group: "Contributing" },
       { path: "ws2_32-proxy/README.md", title: "ws2_32 proxy" },
       { path: "NOTICE.md", title: "Attribution (NOTICE)" },
       { path: "LICENSE.md", title: "License" },
