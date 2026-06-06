@@ -1,0 +1,64 @@
+name: Add issues to project
+
+# When an issue is opened in this repo, add it to the shared Garlemald project
+# board, tag it with the project label, and post a Discord notification. Mirrors
+# the sibling Garlemald-Server / meteor-decomp workflow.
+
+on:
+  issues:
+    types: [opened]
+
+# Least privilege: both steps below authenticate with ADD_TO_PROJECT_PAT (a PAT
+# with project write + repo issues access), never the default GITHUB_TOKEN, so
+# request no GITHUB_TOKEN scopes at all.
+permissions: {}
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/users/swstegall/projects/4
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+
+      - name: Apply repo label
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          script: |
+            const labels = context.payload.issue.labels.map(l => l.name);
+            if (!labels.includes('Garlemald Software Site')) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                labels: ['Garlemald Software Site']
+              });
+            }
+
+      - name: Notify Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+        run: |
+          set -euo pipefail
+          # A missing webhook secret must not fail the job (the issue is already
+          # on the board + labelled); skip the announcement instead.
+          if [ -z "${DISCORD_WEBHOOK_URL:-}" ]; then
+            echo "::warning::DISCORD_WEBHOOK_URL secret is not set — skipping the Discord announcement."
+            exit 0
+          fi
+          # Build the payload with jq so titles containing quotes, backslashes,
+          # or other JSON-special characters are escaped correctly (a raw
+          # interpolated title broke the JSON -> Discord 50109). Passing the
+          # title/URL via env (rather than inlining template expressions in the
+          # run block) also avoids shell injection from untrusted issue titles.
+          content="$(printf '<@&1510380634349109440>, Issue created for Garlemald Software Site.\nTitle: %s\n%s' "$ISSUE_TITLE" "$ISSUE_URL")"
+          payload="$(jq -n --arg content "$content" '{content: $content}')"
+          if curl -fsS -X POST "$DISCORD_WEBHOOK_URL" -H "Content-Type: application/json" -d "$payload"; then
+            echo "Announced the new issue to Discord."
+          else
+            echo "::warning::Discord notification failed (webhook unreachable or rejected)."
+          fi
