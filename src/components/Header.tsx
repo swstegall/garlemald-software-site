@@ -12,6 +12,9 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Popover from "@mui/material/Popover";
+import Stack from "@mui/material/Stack";
+import MuiLink from "@mui/material/Link";
 import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
@@ -23,6 +26,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { PROJECTS, GITHUB_USERNAME, withBase } from "@/lib/projects";
+import { RESOURCE_SECTIONS } from "@/lib/resources";
 import DiscordButton from "@/components/DiscordButton";
 
 interface NavLink {
@@ -59,6 +63,15 @@ export default function Header() {
     setProjectsAnchor(e.currentTarget);
   };
   const closeProjectsMenu = () => setProjectsAnchor(null);
+
+  const [resourcesAnchor, setResourcesAnchor] =
+    React.useState<null | HTMLElement>(null);
+  const resourcesMenuOpen = Boolean(resourcesAnchor);
+
+  const openResourcesMenu = (e: React.MouseEvent<HTMLElement>) => {
+    setResourcesAnchor(e.currentTarget);
+  };
+  const closeResourcesMenu = () => setResourcesAnchor(null);
 
   const Brand = (
     <Box
@@ -153,6 +166,106 @@ export default function Header() {
                   ))}
                 </Menu>
               </React.Fragment>
+            ) : link.label === "Resources" ? (
+              <React.Fragment key={link.label}>
+                <Button
+                  color="inherit"
+                  onClick={openResourcesMenu}
+                  endIcon={<ExpandMoreIcon />}
+                  aria-haspopup="true"
+                  aria-expanded={resourcesMenuOpen ? "true" : undefined}
+                  aria-controls={
+                    resourcesMenuOpen ? "resources-menu" : undefined
+                  }
+                  sx={{
+                    color: pathname.startsWith("/resources")
+                      ? "primary.main"
+                      : "text.primary",
+                  }}
+                >
+                  Resources
+                </Button>
+                <Popover
+                  id="resources-menu"
+                  anchorEl={resourcesAnchor}
+                  open={resourcesMenuOpen}
+                  onClose={closeResourcesMenu}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                  transformOrigin={{ vertical: "top", horizontal: "left" }}
+                  slotProps={{
+                    paper: {
+                      sx: { mt: 0.5, p: 2.5, maxWidth: "min(940px, 94vw)" },
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: {
+                        xs: "1fr",
+                        sm: "repeat(2, minmax(180px, 1fr))",
+                        md: "repeat(4, minmax(170px, 1fr))",
+                      },
+                      gap: { xs: 2, md: 3 },
+                    }}
+                  >
+                    {RESOURCE_SECTIONS.map((section) => (
+                      <Box key={section.slug}>
+                        <MuiLink
+                          component={Link}
+                          href={`/resources/#${section.slug}`}
+                          onClick={closeResourcesMenu}
+                          underline="none"
+                          sx={{
+                            display: "block",
+                            fontWeight: 700,
+                            fontSize: "0.95rem",
+                            color: "text.primary",
+                            pb: 0.75,
+                            mb: 0.75,
+                            borderBottom: "1px solid",
+                            borderColor: "divider",
+                            "&:hover": { color: "primary.main" },
+                          }}
+                        >
+                          {section.title}
+                        </MuiLink>
+                        <Stack
+                          component="ul"
+                          spacing={0.25}
+                          sx={{ listStyle: "none", m: 0, p: 0 }}
+                        >
+                          {section.pages.map((page) => {
+                            const href = `/resources/${section.slug}/${page.slug}/`;
+                            return (
+                              <Box component="li" key={page.slug}>
+                                <MuiLink
+                                  component={Link}
+                                  href={href}
+                                  onClick={closeResourcesMenu}
+                                  underline="none"
+                                  sx={{
+                                    display: "block",
+                                    py: 0.4,
+                                    fontSize: "0.875rem",
+                                    color:
+                                      pathname === href
+                                        ? "primary.main"
+                                        : "text.secondary",
+                                    "&:hover": { color: "primary.main" },
+                                  }}
+                                >
+                                  {page.title}
+                                </MuiLink>
+                              </Box>
+                            );
+                          })}
+                        </Stack>
+                      </Box>
+                    ))}
+                  </Box>
+                </Popover>
+              </React.Fragment>
             ) : (
               <Button
                 key={link.label}
@@ -233,18 +346,20 @@ export default function Header() {
         </Box>
         <Divider />
         <List>
-          {NAV_LINKS.map((link) => (
-            <ListItem key={link.label} disablePadding>
-              <ListItemButton
-                component={Link}
-                href={link.href}
-                onClick={() => setDrawerOpen(false)}
-                selected={isActive(pathname, link.href)}
-              >
-                <ListItemText primary={link.label} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {NAV_LINKS.filter((link) => link.label !== "Resources").map(
+            (link) => (
+              <ListItem key={link.label} disablePadding>
+                <ListItemButton
+                  component={Link}
+                  href={link.href}
+                  onClick={() => setDrawerOpen(false)}
+                  selected={isActive(pathname, link.href)}
+                >
+                  <ListItemText primary={link.label} />
+                </ListItemButton>
+              </ListItem>
+            ),
+          )}
         </List>
         <Divider />
         <List
@@ -278,6 +393,60 @@ export default function Header() {
                 <ListItemText primary={p.name} />
               </ListItemButton>
             </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List
+          subheader={
+            <ListSubheader
+              component="div"
+              sx={{ bgcolor: "transparent", color: "text.secondary" }}
+            >
+              Resources
+            </ListSubheader>
+          }
+        >
+          {RESOURCE_SECTIONS.map((section) => (
+            <React.Fragment key={section.slug}>
+              <ListItem disablePadding>
+                <ListItemButton
+                  component={Link}
+                  href={`/resources/#${section.slug}`}
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  <ListItemText
+                    primary={section.title}
+                    sx={{
+                      "& .MuiListItemText-primary": {
+                        fontWeight: 700,
+                        fontSize: "0.95rem",
+                      },
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+              {section.pages.map((page) => {
+                const href = `/resources/${section.slug}/${page.slug}/`;
+                return (
+                  <ListItem key={page.slug} disablePadding>
+                    <ListItemButton
+                      component={Link}
+                      href={href}
+                      onClick={() => setDrawerOpen(false)}
+                      selected={pathname === href}
+                      sx={{ pl: 4, py: 0.25 }}
+                    >
+                      <ListItemText
+                        primary={page.title}
+                        sx={{
+                          "& .MuiListItemText-primary": { fontSize: "0.85rem" },
+                        }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </React.Fragment>
           ))}
         </List>
         <Divider />
