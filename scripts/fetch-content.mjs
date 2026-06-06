@@ -119,6 +119,9 @@ async function fetchProject(project) {
       docs.push({
         path: doc.path,
         title: doc.title,
+        // Optional section grouping for the Docs tab (e.g. "Contributing").
+        // Omitted entirely when unset so the baked blob stays minimal.
+        ...(doc.group ? { group: doc.group } : {}),
         branch: project.defaultBranch,
         markdown: md,
         docSlug: docSlugFor(doc.path),

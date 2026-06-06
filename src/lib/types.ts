@@ -15,6 +15,15 @@ export interface ProjectDoc {
   path: string;
   /** Human-readable title shown in the docs list and page heading. */
   title: string;
+  /**
+   * Optional section this doc belongs to in the project's Docs tab, e.g.
+   * "Contributing". Docs sharing a `group` render together under that heading;
+   * docs with no `group` fall into the default "Reference" section. Groups are
+   * shown in the order they first appear in the registry, with the ungrouped
+   * "Reference" section always last. This is the scalable hook for per-project
+   * contributor-doc sections (Garlemald-Server today, other projects next).
+   */
+  group?: string;
 }
 
 /**
