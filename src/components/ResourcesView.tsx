@@ -75,7 +75,12 @@ export default function ResourcesView() {
       <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
         <Stack spacing={5}>
           {RESOURCE_SECTIONS.map((section) => (
-            <Box key={section.slug} component="section">
+            <Box
+              key={section.slug}
+              component="section"
+              id={section.slug}
+              sx={{ scrollMarginTop: "84px" }}
+            >
               <Typography variant="h5" component="h2" sx={{ mb: 0.5 }}>
                 {section.title}
               </Typography>
