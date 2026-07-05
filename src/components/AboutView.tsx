@@ -164,8 +164,8 @@ export default function AboutView() {
           The projects on this site build on and beside that legacy: a
           ground-up Rust rewrite of the server, a modern cross-platform
           launcher, a clean-room decompilation of the client binaries, the
-          automation that drives it, and a one-command installer for Apple
-          Silicon Macs.
+          automation that drives it, and one-command installers for Apple
+          Silicon Macs and x86_64 Linux.
         </Typography>
       </Stack>
 
@@ -174,7 +174,7 @@ export default function AboutView() {
       <Typography
         sx={{ color: "text.secondary", lineHeight: 1.75, mb: 3, maxWidth: "68ch" }}
       >
-        Five projects fit together so you can stand the whole thing up yourself —
+        Six projects fit together so you can stand the whole thing up yourself —
         install the game, launch it, point it at a server, and dig into how it
         works under the hood.
       </Typography>
@@ -261,7 +261,7 @@ export default function AboutView() {
             </Typography>
             <Typography sx={{ color: "text.secondary", lineHeight: 1.6 }}>
               The fastest way to ask questions, report issues, and keep up with
-              new releases across all five projects is the Discord server.
+              new releases across all six projects is the Discord server.
             </Typography>
           </Box>
           <Box sx={{ flexShrink: 0 }}>
@@ -327,7 +327,7 @@ export default function AboutView() {
           <Box component="span" sx={{ color: "text.primary", fontWeight: 600 }}>
             GNU AGPL-3.0-or-later
           </Box>
-          . The Apple Silicon installer is released under the{" "}
+          . The two installers are released under the{" "}
           <Box component="span" sx={{ color: "text.primary", fontWeight: 600 }}>
             MIT
           </Box>{" "}

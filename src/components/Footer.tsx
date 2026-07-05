@@ -94,7 +94,7 @@ export default function Footer() {
             >
               A FINAL FANTASY XIV 1.0 (v1.23b) preservation toolkit — a Rust
               server and launcher, a clean-room client decompilation, the agents
-              that drive it, and a one-command Apple Silicon installer.
+              that drive it, and one-command Apple Silicon and Linux installers.
             </Typography>
           </Grid>
 

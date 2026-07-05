@@ -137,7 +137,7 @@ export const QUICKSTARTS: Record<string, QuickStart> = {
       "Build the cross-platform launcher that detects your installed FFXIV 1.x client, patches it forward to `2012.09.19.0001`, and launches the game against a private server. On macOS and Linux it manages its own Wine runtime, so there is nothing else to install.",
     prerequisites: [
       "Git and Rust 1.95.0 — `rustup` installs the pinned toolchain on the first build.",
-      "An existing FINAL FANTASY XIV 1.x install (CrossOver bottle, Whisky prefix, or manual Wine install — all auto-detected). On Apple Silicon, the [XIV 1.0 Apple Silicon Installer](/projects/xiv1point0-apple-silicon-installer/) can produce one.",
+      "An existing FINAL FANTASY XIV 1.x install (CrossOver bottle, Whisky prefix, or manual Wine install — all auto-detected). On Apple Silicon, the [XIV 1.0 Apple Silicon Installer](/projects/xiv1point0-apple-silicon-installer/) can produce one; on x86_64 Linux, the [XIV 1.0 Linux Installer](/projects/xiv1point0-linux-installer/) can.",
       "Linux only: the GTK 3 + WebKit2GTK 4.1 runtime libraries for the login WebView.",
       "Windows only: the MSVC C++ **x86** build tools (the launcher must build 32-bit).",
     ],
@@ -204,7 +204,7 @@ export const QUICKSTARTS: Record<string, QuickStart> = {
     },
     next: [
       "Point the client at a [Garlemald Server](/projects/garlemald-server/) instance (default lobby `127.0.0.1:54994`).",
-      "On Apple Silicon and don't have a 1.x install yet? Run the [XIV 1.0 Apple Silicon Installer](/projects/xiv1point0-apple-silicon-installer/) first.",
+      "Don't have a 1.x install yet? Run the [XIV 1.0 Apple Silicon Installer](/projects/xiv1point0-apple-silicon-installer/) (Apple Silicon) or the [XIV 1.0 Linux Installer](/projects/xiv1point0-linux-installer/) (x86_64 Linux) first.",
       "Grab a prebuilt launcher from the [Downloads page](/downloads/).",
     ],
   },
@@ -413,6 +413,59 @@ export const QUICKSTARTS: Record<string, QuickStart> = {
     next: [
       "Install done? Drive it against a private server with [Garlemald Client](/projects/garlemald-client/), which auto-detects this install.",
       "Stuck? The project [Overview](/projects/xiv1point0-apple-silicon-installer/) has a troubleshooting table for the common disc-discovery and Rosetta errors.",
+      "Questions? Join the [Discord](https://discord.gg/CVjwWs6jnX).",
+    ],
+  },
+
+  "xiv1point0-linux-installer": {
+    slug: "xiv1point0-linux-installer",
+    platforms: ["Linux"],
+    intro:
+      "Bring the original FINAL FANTASY XIV 1.0 up on x86_64 Linux with a single command — the same script works across Debian/Ubuntu, Fedora, Arch, openSUSE, and friends. Given your retail install disc or ISO, `install.sh` provisions a self-contained Wine runtime and drives the stock installer through to a playable `ffxivboot.exe`.",
+    prerequisites: [
+      "An x86_64 Linux machine with a graphical session (X11 or Wayland — the InstallShield GUI needs a display).",
+      "Your own FINAL FANTASY XIV 1.0 install disc, or its ISO, with `ffxivsetup.exe` at the root. The client is NOT redistributed — you must supply it.",
+      "`curl` or `wget`, plus `tar` and `xz`, for the Wine download. For the `.iso` convenience path, 7-Zip (`7zz`/`7z`/`7za`) or `udisksctl` (udisks2).",
+      "Internet access on the first run, for the self-contained Wine build download (skipped with `--system-wine`).",
+    ],
+    steps: [
+      {
+        title: "Clone the repository",
+        code: "git clone https://github.com/swstegall/XIV-1.0-Linux-Installer.git\ncd XIV-1.0-Linux-Installer",
+        lang: "sh",
+      },
+      {
+        title: "Mount your 1.0 disc or ISO",
+        body: "Most desktops auto-mount an inserted disc or a double-clicked `.iso` under `/run/media/$USER/…`. The script scans `/run/media/$USER`, `/media/$USER`, `/media`, and `/mnt` for `ffxivsetup.exe`, so there are usually no path arguments to pass — but you can point it at a mount dir or hand it an `.iso` directly.",
+      },
+      {
+        title: "Run the installer",
+        body: "The script runs unattended — downloading a self-contained Kron4ek Wine build into `target/runtime/`, staging the disc into `target/iso/disc1/`, and provisioning the Wine prefix — until the InstallShield GUI appears. The default amd64 WoW64 build runs the 32-bit client with no i386/multilib packages and no root.",
+        code: "./install.sh",
+        lang: "sh",
+      },
+      {
+        title: "Click through the InstallShield GUI",
+        body: "When the graphical installer appears, accept all defaults. In particular **leave the install path at** `C:\\Program Files (x86)\\SquareEnix\\FINAL FANTASY XIV` so the verification step can find the expected file layout. Re-running `install.sh` skips any step whose output already exists, so a failed run resumes cleanly.",
+      },
+      {
+        title: "Wait for \"Install verified.\"",
+        body: "The script confirms `ffxivboot.exe`, `ffxivupdater.exe`, `ffxivconfig.exe`, and the expected `data/` / `client/` archive layout before declaring success.",
+      },
+      {
+        title: "Launch the game",
+        body: "The install ships an env file, `wine-env.sh`, that you `source` to activate the local Wine — it exports `WINEPREFIX`, `WINEARCH`, `WINE`, `WINESERVER`, and the bundled build's library paths. Source it from any shell, then run the boot binary.",
+        code: "cd target\nsource ./wine-env.sh\n\"$WINE\" \"$WINEPREFIX/drive_c/Program Files (x86)/SquareEnix/FINAL FANTASY XIV/ffxivboot.exe\"",
+        lang: "sh",
+      },
+    ],
+    platformNotes: {
+      Linux:
+        "Everything installs under `./target/` next to the script — no distro Wine packages, no i386/multilib, no root, and nothing written outside the repository. Deleting the repository removes the install. If the default WoW64 build glitches on your GPU for this DirectX 9 title, re-run with `WINE_FLAVOR=staging-amd64 ./install.sh` (the classic build; needs your distro's 32-bit Wine libraries) after deleting `target/prefix`.",
+    },
+    next: [
+      "Install done? Drive it against a private server with [Garlemald Client](/projects/garlemald-client/), which auto-detects this install.",
+      "Stuck? The project [Overview](/projects/xiv1point0-linux-installer/) has a troubleshooting table for disc discovery, WoW64 graphics glitches, and missing Wine libraries.",
       "Questions? Join the [Discord](https://discord.gg/CVjwWs6jnX).",
     ],
   },

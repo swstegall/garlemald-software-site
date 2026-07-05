@@ -30,21 +30,21 @@ export const metadata: Metadata = {
     template: "%s · Garlemald Software",
   },
   description:
-    "A Rust FFXIV v1.23b (1.0) server and launcher, a clean-room client decompilation, the agents that drive it, and a one-command Apple Silicon installer. Docs, quick-start guides, and downloads.",
+    "A Rust FFXIV v1.23b (1.0) server and launcher, a clean-room client decompilation, the agents that drive it, and one-command Apple Silicon and Linux installers. Docs, quick-start guides, and downloads.",
   applicationName: "Garlemald Software",
   openGraph: {
     type: "website",
     siteName: "Garlemald Software",
     title: "Garlemald Software — FFXIV 1.0 preservation toolkit",
     description:
-      "A Rust FFXIV v1.23b (1.0) server and launcher, a clean-room client decompilation, the agents that drive it, and a one-command Apple Silicon installer.",
+      "A Rust FFXIV v1.23b (1.0) server and launcher, a clean-room client decompilation, the agents that drive it, and one-command Apple Silicon and Linux installers.",
     images: [{ url: withBase("/brand/og.png"), width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Garlemald Software — FFXIV 1.0 preservation toolkit",
     description:
-      "Rust FFXIV 1.0 server + launcher, a client decompilation, agent tooling, and an Apple Silicon installer.",
+      "Rust FFXIV 1.0 server + launcher, a client decompilation, agent tooling, and Apple Silicon and Linux installers.",
     images: [withBase("/brand/og.png")],
   },
 };
