@@ -189,6 +189,29 @@ export const PROJECTS = [
       { path: "LICENSE.md", title: "License" },
     ],
   },
+  {
+    slug: "xiv1point0-linux-installer",
+    name: "XIV 1.0 Linux Installer",
+    owner: GITHUB_USER,
+    repo: "XIV-1.0-Linux-Installer",
+    tagline: "One-command FFXIV 1.0 install for x86_64 Linux.",
+    summary:
+      "A single-command installer that brings the original FINAL FANTASY XIV 1.0 (the 2010 release, not A Realm Reborn) up on x86_64 Linux, across distributions. Given the retail install disc or its ISO, install.sh downloads a self-contained Kron4ek Wine build, provisions a dedicated Wine prefix, and drives the stock installer through to a playable ffxivboot.exe — no distro Wine packages, no i386/multilib setup, and no root.",
+    category: "Installer",
+    language: "Shell",
+    license: "MIT",
+    accent: "#F0883E",
+    icon: "terminal",
+    defaultBranch: "master",
+    branches: ["master"],
+    platforms: ["Linux"],
+    hasReleases: false,
+    topics: ["ffxiv", "linux", "wine", "wow64", "installer"],
+    docs: [
+      { path: "README.md", title: "Overview" },
+      { path: "LICENSE.md", title: "License" },
+    ],
+  },
 ];
 
 export const PROJECTS_BY_SLUG = Object.fromEntries(PROJECTS.map((p) => [p.slug, p]));

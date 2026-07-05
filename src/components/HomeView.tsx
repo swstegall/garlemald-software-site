@@ -20,7 +20,7 @@ import DiscordButton from "@/components/DiscordButton";
 import { ORDERED_PROJECTS, getProject, withBase } from "@/lib/projects";
 import type { Project } from "@/lib/types";
 
-// The five-stage story connecting the projects, in pipeline order. Each entry
+// The six-stage story connecting the projects, in pipeline order. Each entry
 // references a real project slug so the step links straight to its detail page.
 interface FitStep {
   slug: string;
@@ -31,8 +31,13 @@ interface FitStep {
 const FIT_STEPS: FitStep[] = [
   {
     slug: "xiv1point0-apple-silicon-installer",
-    role: "Install the game",
+    role: "Install the game (macOS)",
     body: "One command brings the original 2010 FFXIV 1.0 client up on an Apple Silicon Mac — provisioning Wine and driving the retail installer through to a playable ffxivboot.exe.",
+  },
+  {
+    slug: "xiv1point0-linux-installer",
+    role: "Install the game (Linux)",
+    body: "The same idea for x86_64 Linux: one script provisions a self-contained Wine build and drives the retail installer through to a playable ffxivboot.exe — across Debian/Ubuntu, Fedora, Arch, and friends, with no distro Wine packages and no root.",
   },
   {
     slug: "garlemald-client",
@@ -217,10 +222,10 @@ function ProjectsGrid() {
           The projects
         </Typography>
         <Typography variant="body1" sx={{ color: "text.secondary" }}>
-          Five independent, open-source repositories — a server, a launcher, a
-          clean-room decompilation, the agents that drive it, and a one-command
-          installer. Each is documented here with live READMEs, docs, and
-          downloads.
+          Six independent, open-source repositories — a server, a launcher, a
+          clean-room decompilation, the agents that drive it, and one-command
+          installers for macOS and Linux. Each is documented here with live
+          READMEs, docs, and downloads.
         </Typography>
       </Box>
       <Grid container spacing={3}>

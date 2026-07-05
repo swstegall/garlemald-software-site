@@ -202,11 +202,16 @@ export default function StartView() {
           <Box component="strong" sx={{ color: "text.primary" }}>
             To play the game:
           </Box>{" "}
-          on an Apple Silicon Mac, start with the{" "}
+          on an Apple Silicon Mac or x86_64 Linux, start with the matching
+          installer —{" "}
           <Box component={Link} href="#xiv1point0-apple-silicon-installer" sx={{ color: "primary.main" }}>
-            Installer
+            Apple Silicon
           </Box>{" "}
-          to get a 1.0 client, then the{" "}
+          or{" "}
+          <Box component={Link} href="#xiv1point0-linux-installer" sx={{ color: "primary.main" }}>
+            Linux
+          </Box>{" "}
+          — to get a 1.0 client, then the{" "}
           <Box component={Link} href="#garlemald-client" sx={{ color: "primary.main" }}>
             Client
           </Box>{" "}
@@ -214,7 +219,7 @@ export default function StartView() {
           <Box component={Link} href="#garlemald-server" sx={{ color: "primary.main" }}>
             Server
           </Box>{" "}
-          you run yourself. (Already have a 1.x install, or on Linux/Windows? Skip
+          you run yourself. (Already have a 1.x install, or on Windows? Skip
           straight to the Client.)
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
