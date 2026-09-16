@@ -1,5 +1,10 @@
 # garlemald-software-site
 
+> **Bahamut is the new home of the FINAL FANTASY XIV 1.23b development I am
+> working on moving forward.** If you'd like to participate as a developer or
+> tester, or try our hosted server, join our Discord:
+> <https://discord.gg/GUDC2pDNGD>
+
 The website for the **Garlemald** family of FINAL FANTASY XIV 1.0 (v1.23b)
 preservation projects — a single place to read each project's docs, follow
 idiot-proof quick-start guides, and download the latest releases.
@@ -17,7 +22,7 @@ It documents five projects:
 | [decomp-agents](https://github.com/swstegall/decomp-agents) | Parallel autonomous agents that drive the decompilation |
 | [XIV 1.0 Apple Silicon Installer](https://github.com/swstegall/XIV-1.0-Apple-Silicon-Installer) | One-command FFXIV 1.0 install for Apple Silicon |
 
-Community: **[Discord](https://discord.gg/CVjwWs6jnX)**
+Community: **[Bahamut Discord](https://discord.gg/GUDC2pDNGD)** (development has moved there from the Garlemald Discord)
 
 ## How it works
 

@@ -6,6 +6,7 @@ import "highlight.js/styles/github-dark.css";
 import ThemeRegistry from "@/components/ThemeRegistry";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BahamutNotice from "@/components/BahamutNotice";
 import { withBase } from "@/lib/projects";
 
 const sans = Inter({
@@ -64,6 +65,7 @@ export default function RootLayout({
             }}
           >
             <Header />
+            <BahamutNotice />
             <Box component="main" sx={{ flex: 1 }}>
               {children}
             </Box>

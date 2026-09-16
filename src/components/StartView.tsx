@@ -294,7 +294,7 @@ export default function StartView() {
           sx={{ color: "text.secondary", mb: 3, maxWidth: 560, mx: "auto" }}
         >
           The community is the fastest way to get unblocked. Ask questions, share
-          progress, or report a bug on the Discord.
+          progress, or report a bug on the Bahamut Discord.
         </Typography>
         <DiscordButton variant="contained" size="large" />
       </Box>

@@ -261,7 +261,8 @@ export default function AboutView() {
             </Typography>
             <Typography sx={{ color: "text.secondary", lineHeight: 1.6 }}>
               The fastest way to ask questions, report issues, and keep up with
-              new releases across all six projects is the Discord server.
+              new releases across all six projects is the Bahamut Discord
+              server.
             </Typography>
           </Box>
           <Box sx={{ flexShrink: 0 }}>

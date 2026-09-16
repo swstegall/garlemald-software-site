@@ -357,7 +357,8 @@ function CommunityBand() {
             sx={{ color: "text.secondary", maxWidth: 560, mx: "auto", mb: 3.5 }}
           >
             Whether you want to play, contribute a fix, or help grind the
-            decompilation, the community is on Discord. Come say hello.
+            decompilation, the community is on the Bahamut Discord. Come say
+            hello.
           </Typography>
           <Stack
             direction={{ xs: "column", sm: "row" }}

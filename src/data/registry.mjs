@@ -7,7 +7,9 @@
 // Keeping it as `.mjs` avoids any TS-loader requirement on the CI Node runtime.
 
 export const GITHUB_USER = "swstegall";
-export const DISCORD_URL = "https://discord.gg/CVjwWs6jnX";
+// The Bahamut Discord. Development moved there from the Garlemald Discord;
+// every Discord link on the site resolves through this constant.
+export const DISCORD_URL = "https://discord.gg/GUDC2pDNGD";
 export const SITE_REPO = "garlemald-software-site";
 
 /**

@@ -9,6 +9,7 @@
 // `platforms` is universal and shows for every OS.
 
 import type { Platform } from "@/lib/types";
+import { DISCORD_INVITE_URL } from "@/lib/projects";
 
 /** A single ordered step in a quick-start walkthrough. */
 export interface QuickStartStep {
@@ -126,7 +127,7 @@ export const QUICKSTARTS: Record<string, QuickStart> = {
     next: [
       "Need a client? Set up [Garlemald Client](/projects/garlemald-client/) to patch and launch a 1.x install against this server.",
       "Grab a prebuilt server binary from the [Downloads page](/downloads/).",
-      "Questions or bug reports? Join the [Discord](https://discord.gg/CVjwWs6jnX).",
+      `Questions or bug reports? Join the [Bahamut Discord](${DISCORD_INVITE_URL}), the new home of 1.23b development.`,
     ],
   },
 
@@ -413,7 +414,7 @@ export const QUICKSTARTS: Record<string, QuickStart> = {
     next: [
       "Install done? Drive it against a private server with [Garlemald Client](/projects/garlemald-client/), which auto-detects this install.",
       "Stuck? The project [Overview](/projects/xiv1point0-apple-silicon-installer/) has a troubleshooting table for the common disc-discovery and Rosetta errors.",
-      "Questions? Join the [Discord](https://discord.gg/CVjwWs6jnX).",
+      `Questions? Join the [Bahamut Discord](${DISCORD_INVITE_URL}).`,
     ],
   },
 
@@ -466,7 +467,7 @@ export const QUICKSTARTS: Record<string, QuickStart> = {
     next: [
       "Install done? Drive it against a private server with [Garlemald Client](/projects/garlemald-client/), which auto-detects this install.",
       "Stuck? The project [Overview](/projects/xiv1point0-linux-installer/) has a troubleshooting table for disc discovery, WoW64 graphics glitches, and missing Wine libraries.",
-      "Questions? Join the [Discord](https://discord.gg/CVjwWs6jnX).",
+      `Questions? Join the [Bahamut Discord](${DISCORD_INVITE_URL}).`,
     ],
   },
 };
